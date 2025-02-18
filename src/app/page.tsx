@@ -3,7 +3,7 @@ import { useEffect, useState } from "react";
 import { collection, getDocs } from "firebase/firestore";
 import { db } from "../../lib/firebase";
 import Link from "next/link";
-import {TouristSpot} from "../../types/TouristSpot";
+import { TouristSpot } from "../../types/TouristSpot";
 
 export default function Home() {
     const [spots, setSpots] = useState<TouristSpot[]>([]);
@@ -32,6 +32,13 @@ export default function Home() {
                         className="bg-white p-6 rounded-lg shadow-md hover:shadow-lg transition-shadow"
                     >
                         <h2 className="text-xl font-semibold text-gray-800">{spot.Name}</h2>
+                        {spot.Image_Base64 && (
+                            <img
+                                src={`data:image/png;base64,${spot.Image_Base64}`}
+                                alt={spot.Name}
+                                className="w-full h-auto mb-4 rounded-lg"
+                            />
+                        )}
                         <p className="text-gray-600 mt-2">{spot.Location}</p>
                         <p className="text-gray-700 mt-2">{spot.Description}</p>
                         <p className="text-yellow-500 mt-2">Rating: {spot.Rating}</p>

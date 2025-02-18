@@ -3,30 +3,62 @@ import { useState } from "react";
 import { addDoc, collection } from "firebase/firestore";
 import { db } from "../../../lib/firebase";
 import Link from "next/link";
-import {TouristSpot} from "../../../types/TouristSpot";
+import { TouristSpot } from "../../../types/TouristSpot";
 
 export default function AddSpot() {
-    const [formData, setFormData] = useState<Omit<TouristSpot, "Attraction_Id">>({
+    const [formData, setFormData] = useState<Omit<TouristSpot, "Attraction_Id" | "Image_Base64">>({
         Name: "",
         Location: "",
         Description: "",
         Attraction_inquiry_id: "",
         Municipality_id: "",
         Rating: 0,
+        Image_Base64: "", // Add this line to track the base64 encoded image
     });
+    const [imageFile, setImageFile] = useState<File | null>(null);
+
+    const handleImageChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+        const file = event.target.files?.[0];
+        if (file) {
+            const reader = new FileReader();
+            reader.onloadend = () => {
+                if (reader.result) {
+                    setFormData({ ...formData, Image_Base64: reader.result.toString().split(',')[1] });
+                }
+            };
+            reader.readAsDataURL(file);
+        }
+        setImageFile(file);
+    };
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
-        await addDoc(collection(db, "touristSpots"), formData);
-        alert("Spot added successfully!");
-        setFormData({
-            Name: "",
-            Location: "",
-            Description: "",
-            Attraction_inquiry_id: "",
-            Municipality_id: "",
-            Rating: 0,
-        });
+
+        if (!imageFile) {
+            alert("Please select an image.");
+            return;
+        }
+
+        try {
+            await addDoc(collection(db, "touristSpots"), {
+                ...formData,
+            });
+
+            alert("Spot added successfully!");
+            setFormData({
+                Name: "",
+                Location: "",
+                Description: "",
+                Attraction_inquiry_id: "",
+                Municipality_id: "",
+                Rating: 0,
+                Image_Base64: "", // Reset image base64
+            });
+            setImageFile(null); // Clear the image file state
+        } catch (error) {
+            console.error("Error adding spot:", error);
+            alert("Failed to add spot.");
+        }
     };
 
     return (
@@ -107,6 +139,15 @@ export default function AddSpot() {
                             onChange={(e) =>
                                 setFormData({ ...formData, Rating: parseFloat(e.target.value) })
                             }
+                            className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                        />
+                    </div>
+                    <div>
+                        <label className="block text-gray-700">Image</label>
+                        <input
+                            type="file"
+                            accept="image/*"
+                            onChange={handleImageChange}
                             className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
                         />
                     </div>
