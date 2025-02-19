@@ -1,6 +1,6 @@
 "use client";
-import { useState } from "react";
-import { addDoc, collection } from "firebase/firestore";
+import React, { useState } from "react";
+import {addDoc, collection, updateDoc} from "firebase/firestore";
 import { db } from "../../../lib/firebase";
 import Link from "next/link";
 import { TouristSpot } from "../../../types/TouristSpot";
@@ -40,8 +40,17 @@ export default function AddSpot() {
         }
 
         try {
-            await addDoc(collection(db, "touristSpots"), {
+            // Add a new document to the "touristSpots" collection
+            const docRef = await addDoc(collection(db, "touristSpots"), {
                 ...formData,
+            });
+
+            // Use the auto-generated document ID as the Attraction_Id
+            const attractionId = docRef.id;
+
+            // Optionally, you can update the document to include the Attraction_Id
+            await updateDoc(docRef, {
+                Attraction_Id: attractionId,
             });
 
             alert("Spot added successfully!");

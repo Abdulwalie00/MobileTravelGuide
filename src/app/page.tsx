@@ -27,8 +27,9 @@ export default function Home() {
             </h1>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                 {spots.map((spot) => (
-                    <div
+                    <Link
                         key={spot.Attraction_Id}
+                        href={`/spots/${spot.Attraction_Id}`} // Correctly link to the detail page
                         className="bg-white p-6 rounded-lg shadow-md hover:shadow-lg transition-shadow"
                     >
                         <h2 className="text-xl font-semibold text-gray-800">{spot.Name}</h2>
@@ -42,7 +43,7 @@ export default function Home() {
                         <p className="text-gray-600 mt-2">{spot.Location}</p>
                         <p className="text-gray-700 mt-2">{spot.Description}</p>
                         <p className="text-yellow-500 mt-2">Rating: {spot.Rating}</p>
-                    </div>
+                    </Link>
                 ))}
             </div>
             <div className="mt-8 text-center">

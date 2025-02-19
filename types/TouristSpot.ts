@@ -6,5 +6,5 @@ export interface TouristSpot {
     Attraction_inquiry_id: string;
     Municipality_id: string;
     Rating: number;
-    Image_URL?: string; // Optional field for the image URL
+    Image_Base64?: string
 }
