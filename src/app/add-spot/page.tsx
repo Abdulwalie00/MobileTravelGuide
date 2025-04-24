@@ -16,7 +16,7 @@ export default function AddSpot() {
         Image_Base64: "", // Add this line to track the base64 encoded image
     });
     const [imageFile, setImageFile] = useState<File | null>(null);
-
+// commit
     const handleImageChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         const file = event.target.files?.[0];
         if (file) {
